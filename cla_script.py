@@ -7,22 +7,30 @@ import argparse
 
 
 CLA_TEXT = """
-Hello, @{}, thank you for helping with the Mycroft project! We welcome everyone into the community and greatly appreciate your help as we work to build an AI for Everyone.
+Hello, @{}, thank you for helping with the Mycroft project! We welcome everyone
+into the community and greatly appreciate your help as we work to build an AI
+for Everyone.
 
-To protect yourself, the project, and users of Mycroft technologies we require a Contributor Licensing Agreement (CLA) before accepting any code contribution. This agreement makes it crystal clear that along with your code you are offering a license to use it within the confines of this project. You retain ownership of the code, this is just a license.
+To protect yourself, the project, and users of Mycroft technologies we require
+a Contributor Licensing Agreement (CLA) before accepting any code
+contribution. This agreement makes it crystal clear that along with your
+code you are offering a license to use it within the confines of this project.
+You retain ownership of the code, this is just a license.
 
-Please visit https://mycroft.ai/cla to initiate this one-time signing. Thank you!
+Please visit https://mycroft.ai/cla to initiate this one-time signing. Thank
+you!
 """
 
 
 def get_contributors():
     """ Finds contributors in the contributors repository's README.md. """
-    contributors = requests.get('https://raw.githubusercontent.com/MycroftAI/contributors/master/README.md').text
+    contributors = requests.get('https://raw.githubusercontent.com/'
+                                'MycroftAI/contributors/master/'
+                                'README.md').text
     # Everything after the --- break line
     contributors = contributors.split('---\n')[1]
     contributors = contributors.split('\n')
     return [re.sub(r'(^.*\(|\))', '', c.strip()) for c in contributors]
-
 
 
 def main(dry_run=False):
@@ -61,7 +69,7 @@ def main(dry_run=False):
                     labels.append(CLA_Yes)
                     pr.set_labels(*labels)
 
-        else: # No CLA Signed
+        else:  # No CLA Signed
             print('\t{} has not signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
@@ -79,6 +87,7 @@ def main(dry_run=False):
                 print('\tAll is well nothing needs to be done.')
 
     print('\n\nAll PR\'s have been reviewed\n\n')
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
