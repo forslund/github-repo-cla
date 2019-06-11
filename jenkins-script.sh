@@ -7,4 +7,4 @@ if [ ! -d .venv ]; then
 else
     source .venv/bin/activate
 fi
-python cla_script.py --dry-run
+python cla_script.py
