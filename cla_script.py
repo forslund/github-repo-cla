@@ -4,7 +4,7 @@ import os
 import sys
 import re
 import argparse
-
+from datetime import date
 
 CLA_TEXT = """
 Hello, @{}, thank you for helping with the Mycroft project! We welcome everyone
@@ -48,9 +48,7 @@ def main(dry_run=False):
                   if l.name == 'CLA: Needed'][0]
 
     for pr in core_repo.get_pulls(base='dev'):
-        from pdb import set_trace; set_trace()
-        test_users = ['forslund', 'ChristopherRogers1991', 'penrods']
-        if pr.user.login not in test_users:
+        if pr.created_at.date() < date(2019, 6, 6):
             continue
         print('\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
         if pr.user.login in contributors:
