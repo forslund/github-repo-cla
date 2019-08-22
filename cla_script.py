@@ -50,9 +50,9 @@ def main(dry_run=False):
     for pr in core_repo.get_pulls(base='dev'):
         if pr.created_at.date() < date(2019, 6, 6):
             continue
-        print('\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
+        print(u'\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
         if pr.user.login in contributors:
-            print('\t{} has signed the CLA'.format(pr.user.login))
+            print(u'\t{} has signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
             if CLA_Yes not in labels and CLA_Needed not in labels:
@@ -68,7 +68,7 @@ def main(dry_run=False):
                     pr.set_labels(*labels)
 
         else:  # No CLA Signed
-            print('\t{} has not signed the CLA'.format(pr.user.login))
+            print(u'\t{} has not signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
             if CLA_Needed not in labels:
