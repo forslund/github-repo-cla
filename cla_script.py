@@ -33,7 +33,7 @@ def get_contributors():
     return [re.sub(r'(^.*\(|\))', '', c.strip()) for c in contributors]
 
 
-def main(dry_run=False):
+def main(repo, branch, dry_run=False):
     if dry_run:
         print("Doing a dry-run...\nNo changes will be applied to the repo")
 
@@ -41,13 +41,13 @@ def main(dry_run=False):
 
     contributors = get_contributors() + extra_contributors
     gh = Github(os.environ['GITHUB_ACCESS_TOKEN'])
-    core_repo = gh.get_repo('MycroftAI/mycroft-core')
+    core_repo = gh.get_repo(repo)
 
     CLA_Yes = [l for l in core_repo.get_labels() if l.name == 'CLA: Yes'][0]
     CLA_Needed = [l for l in core_repo.get_labels()
                   if l.name == 'CLA: Needed'][0]
 
-    for pr in core_repo.get_pulls(base='dev'):
+    for pr in core_repo.get_pulls(base=branch):
         if pr.created_at.date() < date(2019, 6, 6):
             continue
         print(u'\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
@@ -91,5 +91,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--dry-run', action='store_true',
                         help='Only analyze, don\'t modify the PR\'s')
+    parser.add_argument('-b', '--branch', default='master',
+                        help='Only analyze, don\'t modify the PR\'s')
+    parser.add_argument('repo', help='Github Repo, Example: '
+                                     'MycroftAI/mycroft-core')
     args = parser.parse_args(sys.argv[1:])
-    main(dry_run=args.dry_run)
+    main(args.repo, branch=args.branch, dry_run=args.dry_run)
