@@ -37,7 +37,7 @@ def main(repo, branch, dry_run=False):
     if dry_run:
         print("Doing a dry-run...\nNo changes will be applied to the repo")
 
-    extra_contributors = ['JarbasAl']
+    extra_contributors = ['jarbasal']
 
     contributors = get_contributors() + extra_contributors
     gh = Github(os.environ['GITHUB_ACCESS_TOKEN'])
