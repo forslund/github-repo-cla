@@ -40,6 +40,7 @@ def get_contributors():
                                 'MycroftAI/contributors/master/'
                                 'README.md').text
     # Everything after the --- break line
+    contributors = contributors.lower()
     contributors = contributors.split('---\n')[1]
     contributors = contributors.split('\n')
     return [re.sub(r'(^.*\(|\))', '', c.strip()) for c in contributors]
@@ -64,7 +65,7 @@ def main(repo, branch, dry_run=False):
         if pr.created_at.date() < date(2019, 6, 6):
             continue
         print(u'\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
-        if pr.user.login in contributors:
+        if pr.user.login.lower() in contributors:
             print(u'\t{} has signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
