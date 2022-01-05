@@ -53,13 +53,14 @@ def main(repo, branch, dry_run=False):
 
     contributors = get_contributors() + extra_contributors
     gh = Github(os.environ['GITHUB_ACCESS_TOKEN'])
-    core_repo = gh.get_repo(repo)
+    repo = gh.get_repo(repo)
 
-    CLA_Yes = [l for l in core_repo.get_labels() if l.name == 'CLA: Yes'][0]
-    CLA_Needed = [l for l in core_repo.get_labels()
-                  if l.name == 'CLA: Needed'][0]
+    cla_yes = [label for label in repo.get_labels()
+               if label.name == 'CLA: Yes'][0]
+    cla_needed = [label for label in repo.get_labels()
+                  if label.name == 'CLA: Needed'][0]
 
-    for pr in core_repo.get_pulls(base=branch):
+    for pr in repo.get_pulls(base=branch):
         if pr.created_at.date() < date(2019, 6, 6):
             continue
         print(u'\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
@@ -67,31 +68,31 @@ def main(repo, branch, dry_run=False):
             print(u'\t{} has signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
-            if CLA_Yes not in labels and CLA_Needed not in labels:
+            if cla_yes not in labels and cla_needed not in labels:
                 print('\t"CLA Yes" needs to be added')
                 if not dry_run:
-                    labels.append(CLA_Yes)
+                    labels.append(cla_yes)
                     pr.set_labels(*labels)
-            elif CLA_Yes not in labels and CLA_Needed in labels:
+            elif cla_yes not in labels and cla_needed in labels:
                 print('"\tCLA Needed" must be removed')
                 if not dry_run:
-                    labels.remove(CLA_Needed)
-                    labels.append(CLA_Yes)
+                    labels.remove(cla_needed)
+                    labels.append(cla_yes)
                     pr.set_labels(*labels)
 
         else:  # No CLA Signed
             print(u'\t{} has not signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
-            if CLA_Needed not in labels:
+            if cla_needed not in labels:
                 print('\tAdding "CLA Needed" Label')
                 if not dry_run:
-                    labels.append(CLA_Needed)
+                    labels.append(cla_needed)
                     pr.set_labels(*labels)
 
                 print('\tAdding Comment with CLA Instructions')
                 if not dry_run:
-                    issue = core_repo.get_issue(pr.number)
+                    issue = repo.get_issue(pr.number)
                     issue.create_comment(CLA_TEXT.format(pr.user.login))
             else:
                 print('\tAll is well nothing needs to be done.')
