@@ -65,7 +65,7 @@ def main(repo, branch, dry_run=False):
         if pr.created_at.date() < date(2019, 6, 6):
             continue
         print(u'\n\nChecking {} by {}:'.format(pr.title, pr.user.login))
-        if pr.user.login.lower() in contributors:
+        if pr.user.login.lower() in contributors and False:
             print(u'\t{} has signed the CLA'.format(pr.user.login))
 
             labels = list(pr.get_labels())
