@@ -43,14 +43,14 @@ def get_contributors():
     contributors = contributors.lower()
     contributors = contributors.split('---\n')[1]
     contributors = contributors.split('\n')
-    return [re.sub(r'(^.*\(|\))', '', c.strip()) for c in contributors]
+    return [re.sub(r'(^.*\(|\))', '', c.strip()).lower() for c in contributors]
 
 
 def main(repo, branch, dry_run=False):
     if dry_run:
         print("Doing a dry-run...\nNo changes will be applied to the repo")
 
-    extra_contributors = ['JarbasAl']
+    extra_contributors = ['jarbasal']
 
     contributors = get_contributors() + extra_contributors
     gh = Github(os.environ['GITHUB_ACCESS_TOKEN'])
